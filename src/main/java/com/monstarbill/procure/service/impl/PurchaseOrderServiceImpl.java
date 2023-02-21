@@ -1914,4 +1914,18 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	
 		return purchaseOrderItem;
 	}
+
+	@Override
+	public Optional<PurchaseOrder> findByPoNumber(String poNumber) {
+		Optional<PurchaseOrder> optPo = purchaseOrderRepository.findByPoNumber(poNumber);
+		return optPo;
+	}
+	
+	@Override
+	public List<PurchaseOrderItem> findByPoIdForItem(Long poId) {
+		List<PurchaseOrderItem> itemyByPo = new ArrayList<PurchaseOrderItem>();
+		itemyByPo = this.purchaseOrderItemRepository.getAllItemByPoAndIsDeleted(poId, false);
+		log.info("Get all purchase order items by po number ." + itemyByPo);
+		return itemyByPo;
+	}
 }

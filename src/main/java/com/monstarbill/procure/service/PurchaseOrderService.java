@@ -1,6 +1,7 @@
 package com.monstarbill.procure.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,5 +61,9 @@ public interface PurchaseOrderService {
 	public Boolean selfApprove(Long poId);
 
 	public PurchaseOrderItem savePurchaseOrderItem(PurchaseOrderItem purchaseOrderItem);
+
+	public Optional<PurchaseOrder> findByPoNumber(String poNumber);
+	
+	public List<PurchaseOrderItem> findByPoIdForItem(Long poId);
 
 }

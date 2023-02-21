@@ -2,6 +2,7 @@ package com.monstarbill.procure.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -402,4 +403,9 @@ public class PurchaseOrderController {
 		log.info("Purchase Order saved successfully");
 		return ResponseEntity.ok(purchaseOrderItem);
 	}
+	
+	@GetMapping("/find-by-po-number")
+    public Optional<PurchaseOrder> findByPoNumber(@RequestParam String poNumber) {
+        return purchaseOrderService.findByPoNumber(poNumber);
+    }
 }
