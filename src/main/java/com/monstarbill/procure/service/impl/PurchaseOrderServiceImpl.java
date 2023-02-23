@@ -594,7 +594,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 			
 			// create grouping as per criteria
 			for (RfqPoRequest rfqPoRequest : rfqPoRequests) {
-				String keyName = rfqPoRequest.getPrLocationId() + "_" + rfqPoRequest.getPrCurrency() + "_" + rfqPoRequest.getSupplierId();
+				String keyName = rfqPoRequest.getPrLocationId() + "_" + rfqPoRequest.getSupplierCurrency() + "_" + rfqPoRequest.getSupplierId();
 				String prIds = null;
 				if (groupedPr.containsKey(keyName)) {
 					prIds = groupedPr.get(keyName) + "|" + String.valueOf(rfqPoRequest.getPrId());
@@ -818,12 +818,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 									}
 									poItem.setRate(qaItem.getRatePerUnit());
 									poItem.setAmount(qaItem.getActualRate());
-									amount += qaItem.getActualRate();
+									amount += poItem.getAmount();
 									poItem.setPrId(qaItem.getPrId());
 									prIds.add(String.valueOf(qaItem.getPrId()));
 									poItem.setShipToLocationId(qaItem.getPrLocationId());
 									poItem.setShipToLocation(qaItem.getPrLocation());
-									poItem.setReceivedByDate(CommonUtils.convertOffsetDateToDate(qaItem.getRecievedDate()));
+									// poItem.setReceivedByDate(CommonUtils.convertOffsetDateToDate(qaItem.getRecievedDate()));
+									poItem.setReceivedByDate(CommonUtils.convertOffsetDateToDate(qaItem.getExpectedDate()));
 			
 									poItems.add(poItem);
 									purchaseOrder.setPurchaseOrderItems(poItems);
