@@ -207,7 +207,7 @@ public class QuotationAnalysisItem implements Cloneable {
 	}
 	
 	public QuotationAnalysisItem(Long id, String qaNumber, Long itemId, String name, String description, String integratedId, Long accountCode,  String uom, 
-			Double quantity, Double ratePerUnit, Double actualRate, OffsetDateTime recievedDate, Long poId) {
+			Double quantity, Double ratePerUnit, Double actualRate, OffsetDateTime recievedDate, Long poId, OffsetDateTime expectedDate) {
 		this.id = id;
 		this.qaNumber = qaNumber;
 		this.itemId = itemId;
@@ -221,6 +221,7 @@ public class QuotationAnalysisItem implements Cloneable {
 		this.actualRate = actualRate;
 		this.recievedDate = recievedDate;
 		this.poId = poId;
+		this.expectedDate = expectedDate;
 	}
 	
 	public QuotationAnalysisItem(Long qaId, String qaNumber, Double quantity) {

@@ -1257,24 +1257,26 @@ public class QuotationServiceImpl implements QuotationService {
 					List<PrItem> prItems = purchaseRequisition.getPrItems();
 					if (CollectionUtils.isNotEmpty(prItems)) {
 						for (PrItem prItem : prItems) {
-							QuotationItem quotationItem = new QuotationItem();
-							quotationItem.setQuotationId(quotationId);
-							quotationItem.setRfqNumber(rfqNumber);
-							quotationItem.setItemId(prItem.getItemId());
-							quotationItem.setQuantity(prItem.getQuantity());
-							quotationItem.setCurrency(purchaseRequisition.getCurrency());
-							quotationItem.setReceivedDate(rfqRequest.getTransactionalDate());
-							quotationItem.setPrNumber(purchaseRequisition.getPrNumber());
-							quotationItem.setPrId(prId);
-							quotationItem.setPrLocation(purchaseRequisition.getLocationId());
-							quotationItem.setCreatedBy(username);
-							quotationItem.setLastModifiedBy(username);
-							
-							quotationItem = this.quotationItemRepository.save(quotationItem);
-							log.info("Quotation Item is saved : " + quotationItem.toString());
-							// History of Quotation Item
-							this.quotationHistoryRepository.save(this.prepareQuotationHistory(rfqNumber, quotationItem.getId(), AppConstants.QUOTATION_ITEM, null, Operation.CREATE.toString(), username, null, String.valueOf(quotationItem.getId())));
-							log.info("Quotation Item history is saved.");
+							if (prItem.getRemainedQuantity() > 0) {
+								QuotationItem quotationItem = new QuotationItem();
+								quotationItem.setQuotationId(quotationId);
+								quotationItem.setRfqNumber(rfqNumber);
+								quotationItem.setItemId(prItem.getItemId());
+								quotationItem.setQuantity(prItem.getQuantity());
+								quotationItem.setCurrency(purchaseRequisition.getCurrency());
+								quotationItem.setReceivedDate(rfqRequest.getTransactionalDate());
+								quotationItem.setPrNumber(purchaseRequisition.getPrNumber());
+								quotationItem.setPrId(prId);
+								quotationItem.setPrLocation(purchaseRequisition.getLocationId());
+								quotationItem.setCreatedBy(username);
+								quotationItem.setLastModifiedBy(username);
+								
+								quotationItem = this.quotationItemRepository.save(quotationItem);
+								log.info("Quotation Item is saved : " + quotationItem.toString());
+								// History of Quotation Item
+								this.quotationHistoryRepository.save(this.prepareQuotationHistory(rfqNumber, quotationItem.getId(), AppConstants.QUOTATION_ITEM, null, Operation.CREATE.toString(), username, null, String.valueOf(quotationItem.getId())));
+								log.info("Quotation Item history is saved.");
+							}
 						}
 					}
 				}			

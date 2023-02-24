@@ -800,7 +800,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 					Long supplierId = null;
 					String currency = null;
 					Double exchangeRate = null;
-					
+					Double totalAmount = 0.0;					
 					// Iterate over the QA Items
 					if (CollectionUtils.isNotEmpty(qaItems)) {
 						Double amount = 0.0;
@@ -818,6 +818,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 									}
 									poItem.setRate(qaItem.getRatePerUnit());
 									poItem.setAmount(qaItem.getActualRate());
+									totalAmount += (qaItem.getRatePerUnit() * poItem.getQuantity());
 									amount += poItem.getAmount();
 									poItem.setPrId(qaItem.getPrId());
 									prIds.add(String.valueOf(qaItem.getPrId()));
@@ -844,8 +845,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 						purchaseOrder.setSupplierId(supplierId);
 						purchaseOrder.setCurrency(currency);
 						purchaseOrder.setExchangeRate(exchangeRate);
-						purchaseOrder.setAmount(amount);
-						purchaseOrder.setTotalAmount(amount);
+						purchaseOrder.setAmount(totalAmount);
+						purchaseOrder.setTotalAmount(totalAmount);
 						
 						purchaseOrders.add(purchaseOrder);
 					}
