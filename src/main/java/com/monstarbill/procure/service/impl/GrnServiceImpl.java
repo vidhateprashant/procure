@@ -205,7 +205,8 @@ public class GrnServiceImpl implements GrnService {
 		Optional<GrnItem> oldGrnItem = Optional.empty();
 		if (grnItem.getId() == null) {
 			grnItem.setRtvQuantity(0.0);
-			grnItem.setUnbilledQuantity(grnItem.getQuantity());
+			grnItem.setUnbilledQuantity(grnItem.getReciveQuantity());
+//			grnItem.setUnbilledQuantity(grnItem.getQuantity());
 			//grnItem.setRemainQuantity(grnItem.getQuantity());
 			grnItem.setCreatedBy(CommonUtils.getLoggedInUsername());
 			
