@@ -148,6 +148,9 @@ public class QuotationAnalysisItem implements Cloneable {
 	@Transient
 	private Long accountCode;
 	
+	@Transient
+	private String department;
+	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
@@ -207,7 +210,8 @@ public class QuotationAnalysisItem implements Cloneable {
 	}
 	
 	public QuotationAnalysisItem(Long id, String qaNumber, Long itemId, String name, String description, String integratedId, Long accountCode,  String uom, 
-			Double quantity, Double ratePerUnit, Double actualRate, OffsetDateTime recievedDate, Long poId, OffsetDateTime expectedDate) {
+			Double quantity, Double ratePerUnit, Double actualRate, OffsetDateTime recievedDate, Long poId, OffsetDateTime expectedDate,
+			String prNumber, String locationName, String department) {
 		this.id = id;
 		this.qaNumber = qaNumber;
 		this.itemId = itemId;
@@ -222,6 +226,9 @@ public class QuotationAnalysisItem implements Cloneable {
 		this.recievedDate = recievedDate;
 		this.poId = poId;
 		this.expectedDate = expectedDate;
+		this.prNumber = prNumber;
+		this.prLocation = locationName;
+		this.department = department;
 	}
 	
 	public QuotationAnalysisItem(Long qaId, String qaNumber, Double quantity) {

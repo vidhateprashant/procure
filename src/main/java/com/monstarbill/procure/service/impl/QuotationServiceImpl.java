@@ -153,6 +153,7 @@ public class QuotationServiceImpl implements QuotationService {
 		if (isSubmitted) {
 			for (QuotationPr quotationPr : quotation.getQuotationPrs()) {
 				List<Quotation> quotationsByPr = this.quotationRepository.findByPrIdAndStatusAndIsDeleted(quotationPr.getPrId(), TransactionStatus.SUBMITTED.getTransactionStatus(), false);
+				quotationsByPr.addAll(this.quotationRepository.findByPrIdAndStatusAndIsDeleted(quotationPr.getPrId(), TransactionStatus.QA_CREATED.getTransactionStatus(), false));
 				if (CollectionUtils.isNotEmpty(quotationsByPr)) {
 					for (Quotation existingQuotation : quotationsByPr) {
 						if (quotation.getId() == null || (!quotation.getId().equals(existingQuotation.getId()))) {

@@ -33,9 +33,11 @@ public interface QuotationAnalysisItemRepository extends JpaRepository<Quotation
 			"	then i.assetAccountId   " + 
 			"	else i.expenseAccountId  " + 
 			" end as accountCode,  " + 
-			" qai.uom, qai.quantity, qai.ratePerUnit, qai.actualRate, qai.recievedDate, qai.poId, qai.expectedDate) " + 
+			" qai.uom, qai.quantity, qai.ratePerUnit, qai.actualRate, qai.recievedDate, qai.poId, qai.expectedDate, pr.prNumber, l.locationName, pr.department) " + 
 			" FROM QuotationAnalysisItem qai " + 
 			" INNER JOIN Item i ON qai.itemId = i.id and i.isActive is true " + 
+			" LEFT JOIN PurchaseRequisition pr ON pr.id = qai.prId " +
+			" LEFT JOIN Location l ON l.id = qai.prLocationId " +
 			" WHERE qai.qaId = :qaId AND qai.isAwarded is true AND qai.approvedSupplier = :supplierId AND qai.prLocationId = :locationId ")
 	public List<QuotationAnalysisItem> findItemsByQaAndSupplierAndLocation(Long qaId, Long supplierId, Long locationId);
 
