@@ -66,6 +66,8 @@ public class GrnItem implements Cloneable {
 	
 	private String itemName;
 	
+	private String status;
+	
 	private String itemDescription;
 	
 	private String itemUom;

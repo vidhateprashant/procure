@@ -201,15 +201,16 @@ public class GrnServiceImpl implements GrnService {
 		}
 		
 		Double remainedQuantity = 0.0;
+		//Double remainedQtyForBill = 0.0;
 		
 		Optional<GrnItem> oldGrnItem = Optional.empty();
 		if (grnItem.getId() == null) {
+			grnItem.setStatus(TransactionStatus.OPEN.getTransactionStatus());
 			grnItem.setRtvQuantity(0.0);
 			grnItem.setUnbilledQuantity(grnItem.getReciveQuantity());
 //			grnItem.setUnbilledQuantity(grnItem.getQuantity());
 			//grnItem.setRemainQuantity(grnItem.getQuantity());
 			grnItem.setCreatedBy(CommonUtils.getLoggedInUsername());
-			
 			remainedQuantity = purchaseOrderItem.getRemainQuantity() - grnItem.getReciveQuantity();
 		} else {
 			// Get the existing object using the deep copy
@@ -231,16 +232,22 @@ public class GrnServiceImpl implements GrnService {
 //				throw new CustomException("Recieved quantity should be less than or equals to remained quantity.");
 //			}
 		}
-		if (remainedQuantity < 0) {
+		if (remainedQuantity <= 0) {
 			throw new CustomException("Recieved quantity should be less than or equals to remained quantity.");
 		}
 		
 		grnItem.setGrnId(grnId);
 		grnItem.setPoNumber(poNumber);
 		grnItem.setGrnNumber(grnNumber);
+		grnItem.setUnbilledQuantity(grnItem.getReciveQuantity());
 		grnItem.setLastModifiedBy(CommonUtils.getLoggedInUsername());
 		
 		purchaseOrderItem.setRemainQuantity(remainedQuantity);
+		if(purchaseOrderItem.getRemainQuantity()==0) {
+			purchaseOrderItem.setStatus(TransactionStatus.RECEIVED.getTransactionStatus());
+		}else {
+			purchaseOrderItem.setStatus(TransactionStatus.PARTIALLY_RECEIVED.getTransactionStatus());
+		}
 		this.purchaseOrderItemRepository.save(purchaseOrderItem);
 		
 		GrnItem grnItemSaved = this.grnItemRepository.save(grnItem);

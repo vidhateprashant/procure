@@ -17,11 +17,11 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, St
 
 	public Optional<PurchaseOrder> findByPoNumber(String poNumber);
 	
-	@Query("select new com.monstarbill.procure.models.PurchaseOrder(p.id, p.poNumber, p.subsidiaryId, p.locationId, p.location, p.supplierId, p.poDate, p.rejectedComments, p.poStatus, p.memo, s.name as subsidiaryName, "
+	@Query("select new com.monstarbill.procure.models.PurchaseOrder(p.id, p.poNumber, p.subsidiaryId,p.totalAmount, p.locationId, p.location, p.supplierId, p.poDate, p.rejectedComments, p.poStatus, p.memo, s.name as subsidiaryName, "
 			+ " l.locationName as locationName, su.name as supplierName, p.approvedBy, p.nextApprover, p.nextApproverRole, e.fullName ) from PurchaseOrder p "
 			+ " inner join Subsidiary s ON s.id = p.subsidiaryId inner join Location l ON l.id = p.locationId left join Employee e ON CAST(e.id as text) = p.approvedBy "
 			+ " left join Supplier su ON su.id = p.supplierId where p.poStatus in :status AND p.isDeleted is false and p.nextApprover = :userId")
-	public List<PurchaseOrder> findAllByPoStatus(List<String> status, String userId);
+	public List<PurchaseOrder> findAllByPoStatus(@Param("status")List<String> status, @Param("userId")String userId);
 	
 	@Query("select new com.monstarbill.procure.models.PurchaseOrder(po.id,po.poNumber,po.poStatus, po.poDate) from PurchaseOrder po where (po.poStatus in :poStatus) AND po.locationId = :locationId AND po.subsidiaryId = :subsidiaryId AND po.isDeleted = :isDeleted AND po.matchType = '3 Way' ")
 	public List<PurchaseOrder> getAllPoByLocationIdAndSubsidiaryIdAndPoStatusAndIsDeleted(@Param("locationId") Long locationId,@Param("subsidiaryId") Long subsidiaryId,@Param("poStatus") List<String> poStatus, @Param("isDeleted") boolean isDeleted);

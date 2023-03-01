@@ -23,6 +23,8 @@ public enum TransactionStatus {
 	RETURN("Returned"),
 	PARTIALLY_RETURN("Partially Returned"),
 	FULLY_RETURNED("Fully Returned"),
+	PARTIALLY_RECEIVED("Partially Recevied"),
+	RECEIVED("Received"),
 	VOID("Voided");
 	
 	// constructor

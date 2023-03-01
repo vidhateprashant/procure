@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.monstarbill.procure.models.GrnItem;
 
@@ -29,7 +30,8 @@ public interface GrnItemRepository extends JpaRepository<GrnItem, String> {
 	@Query("select gi FROM GrnItem gi where gi.grnId = :grnId and gi.isDeleted = :isDeleted and gi.reciveQuantity > gi.rtvQuantity ")
 	public List<GrnItem> findByGrnIdWithQuantity(Long grnId, boolean isDeleted);
 	
-	public GrnItem findByGrnIdAndItemIdAndIsDeleted(Long grnId, Long itemId, boolean isDeleted);
+	@Query("select gi FROM GrnItem gi where gi.grnId = :grnId and gi.itemId = :itemId and gi.isDeleted = :isDeleted and gi.unbilledQuantity != 0 ")
+	public GrnItem findByGrnIdAndItemIdAndIsDeleted(@Param("grnId")Long grnId, @Param("itemId")Long itemId, @Param("isDeleted") boolean isDeleted);
 
 	List<GrnItem> findItemsByGrnNumber(String grnNumber);
 

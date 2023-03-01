@@ -267,13 +267,14 @@ public class PurchaseOrder implements Cloneable {
 
 
 	
-	public PurchaseOrder(Long id, String poNumber, Long subsidiaryId, Long locationId, String location,
+	public PurchaseOrder(Long id, String poNumber, Long subsidiaryId, Double totalAmount, Long locationId, String location,
 			Long supplierId, Date poDate, String rejectedComments, String poStatus, String memo,
 			String subsidiaryName, String locationName, String supplierName, String approvedBy,
 			String nextApprover, String nextApproverRole, String approvedByName) {
 		this.id = id;
 		this.poNumber = poNumber;
 		this.subsidiaryId = subsidiaryId;
+		this.totalAmount = totalAmount;
 		this.locationId = locationId;
 		this.location = location;
 		this.supplierId = supplierId;

@@ -49,7 +49,9 @@ public interface PurchaseOrderItemRepository extends JpaRepository<PurchaseOrder
 	
 	public List<PurchaseOrderItem> findByPoIdAndIsDeleted(Long poId, boolean isDeleted);
 	
-	public PurchaseOrderItem findByPoIdAndItemIdAndIsDeleted(Long poId, Long itemId, boolean isDeleted);
+	@Query("select poi FROM PurchaseOrderItem poi where poi.poId = :poId and poi.itemId = :itemId and "
+			+ " poi.isDeleted = :isDeleted and poi.unbilledQuantity != 0 ")
+	public PurchaseOrderItem findByPoIdAndItemIdAndIsDeleted(@Param("poId")Long poId, @Param("itemId")Long itemId, @Param("isDeleted")boolean isDeleted);
 
 	@Query(" SELECT sum(poi.quantity) "
 			+ " FROM PurchaseOrder po "
