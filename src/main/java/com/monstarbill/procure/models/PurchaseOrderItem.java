@@ -207,7 +207,7 @@ public class PurchaseOrderItem implements Cloneable {
 	// constructor used for single get call
 	public PurchaseOrderItem(Long id, String poNumber, Long poId, Long itemId, Double quantity, Double rate, Long accountId, Double amount, Long taxGroupId, Double taxAmount, Date receivedByDate, Long prId, 
 			Long shipToLocationId, String shipToLocation, String department, String memo, String itemName, String itemDescription, String itemUom, String itemIntegratedId, String prNumber, Double remainQuantity,
-			Double prItemRemainedQuantity) {
+			Double prItemRemainedQuantity, Double unbilledQuantity, String status) {
 		this.id = id;
 		this.poId = poId;
 		this.poNumber = poNumber;
@@ -231,6 +231,8 @@ public class PurchaseOrderItem implements Cloneable {
 		this.prNumber = prNumber;
 		this.remainQuantity = remainQuantity;
 		this.prItemRemainedQuantity = prItemRemainedQuantity;
+		this.unbilledQuantity = unbilledQuantity;
+		this.status = status;
 	}
 
 	public PurchaseOrderItem(Long id, String poNumber,Long taxGroupId, Long poId, Long itemId, Double remainQuantity, Double quantity, Double rate,

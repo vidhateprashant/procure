@@ -232,7 +232,7 @@ public class GrnServiceImpl implements GrnService {
 //				throw new CustomException("Recieved quantity should be less than or equals to remained quantity.");
 //			}
 		}
-		if (remainedQuantity <= 0) {
+		if (remainedQuantity < 0) {
 			throw new CustomException("Recieved quantity should be less than or equals to remained quantity.");
 		}
 		

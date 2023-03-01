@@ -29,7 +29,7 @@ public interface PurchaseOrderItemRepository extends JpaRepository<PurchaseOrder
 			+ " 	then pritem.itemDescription  "
 			+ " 	else i.description "
 			+ " end as itemDescription, "
-			+ " i.uom, i.integratedId, pritem.prNumber, poi.remainQuantity, pritem.remainedQuantity) "
+			+ " i.uom, i.integratedId, pritem.prNumber, poi.remainQuantity, pritem.remainedQuantity, poi.unbilledQuantity, poi.status) "
 			+ " FROM PurchaseOrderItem poi "
 			+ " INNER JOIN PurchaseOrder po ON po.id = poi.poId "
 			+ " INNER JOIN Item i ON i.id = poi.itemId "
