@@ -1044,6 +1044,7 @@ public class PurchaseRequisitionServiceImpl implements PurchaseRequisitionServic
 				// Requestor
 				try {
 					if (inputCurrentRow.getCell(8) != null) {
+						// TODO set requestor id
 						purchaseRequisition.setRequestor(inputCurrentRow.getCell(8).getStringCellValue());
 					}
 				} catch (Exception e) {
@@ -1186,6 +1187,9 @@ public class PurchaseRequisitionServiceImpl implements PurchaseRequisitionServic
 			    log.info(map.getKey() + " ==== >>> " + map.getValue());
 			    PurchaseRequisition purchaseRequisition = map.getValue();
 			    if (purchaseRequisition != null && !purchaseRequisition.isHasError()) {
+			    	for (PrItem prItem : purchaseRequisition.getPrItems()) {
+						prItem.setEstimatedAmount(prItem.getQuantity() * prItem.getRate());
+					}
 					this.save(purchaseRequisition);
 					log.info("Purchase Requisition is saved.");
 			    }

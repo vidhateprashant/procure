@@ -666,6 +666,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 			List<PrItem> prItems = purchaseRequisitionService.findUnprocessedItemsByPrId(prId, FormNames.PO.getFormName());
 			
 			if (CollectionUtils.isNotEmpty(prItems)) {
+				Double totalAmount = 0.0;
 				for (PrItem prItem : prItems) {
 					lineAmount = 0.0;
 					PurchaseOrderItem purchaseOrderItem = new PurchaseOrderItem();
@@ -676,12 +677,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 					// Added 01 as per comment in the file
 					lineAmount = purchaseOrderItem.getQuantity() * purchaseOrderItem.getRate();
 					purchaseOrderItem.setAmount(lineAmount);
-					Double totalAmount = purchaseOrder.getAmount();
-					if (totalAmount == null) {
-						totalAmount = lineAmount;
-					}
-					purchaseOrder.setAmount(totalAmount);
-					purchaseOrder.setTotalAmount(totalAmount);
+					totalAmount += lineAmount;
 					purchaseOrderItem.setReceivedByDate(prItem.getReceivedDate());
 					purchaseOrderItem.setPrId(prId);
 					purchaseOrderItem.setShipToLocationId(rfqPoRequest.getPrLocationId());
@@ -689,6 +685,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 					purchaseOrderItem.setDepartment(prItem.getDepartment());
 					poItems.add(purchaseOrderItem);
 				}
+				purchaseOrder.setAmount(totalAmount);
+				purchaseOrder.setTotalAmount(totalAmount);
 			}
 		}
 
