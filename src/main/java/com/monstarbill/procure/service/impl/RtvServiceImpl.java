@@ -157,9 +157,16 @@ public class RtvServiceImpl implements RtvService {
 	public RtvItem saveItem(Rtv rtv, RtvItem rtvItem) {
 		Optional<RtvItem> oldRtvItem = Optional.empty();
 		String username = CommonUtils.getLoggedInUsername();
-		
+		Double remainedQuantity = 0.0;
+
 		if (rtvItem.getId() == null) {
 			rtvItem.setCreatedBy(username);
+			List<GrnItem> grnItems = this.grnItemRepository.findByGrnIdAndItemId(rtvItem.getGrnId(), rtvItem.getItemId());
+			for (GrnItem grnItem : grnItems) {
+				grnItem.setUnbilledQuantity(grnItem.getUnbilledQuantity() - rtvItem.getReturnQuantity());
+			}
+			this.grnItemRepository.saveAll(grnItems);
+			
 		} else {
 			// Get existing address using deep copy
 			oldRtvItem = this.rtvItemRepository.findByIdAndIsDeleted(rtvItem.getId(), false);
@@ -171,6 +178,18 @@ public class RtvServiceImpl implements RtvService {
 					throw new CustomException("Error while Cloning the object. Please contact administrator.");
 				}
 			}
+			List<GrnItem> grnItems = this.grnItemRepository.findByGrnIdAndItemId(rtvItem.getGrnId(), rtvItem.getItemId());
+			for (GrnItem grnItem : grnItems) {
+			Double newQuantity = rtvItem.getReturnQuantity();
+			Double oldQuantity = oldRtvItem.get().getReturnQuantity();
+			Double difference = newQuantity - oldQuantity;
+			remainedQuantity = grnItem.getUnbilledQuantity() - difference;
+				if (remainedQuantity < 0) {
+					throw new CustomException("Return quantity should be less than or equals to unbilled quantity.");
+				}
+				grnItem.setUnbilledQuantity(remainedQuantity);
+			}
+			this.grnItemRepository.saveAll(grnItems);
 		}
 		rtvItem.setRtvId(rtv.getId());
 		rtvItem.setRtvNumber(rtv.getRtvNumber());

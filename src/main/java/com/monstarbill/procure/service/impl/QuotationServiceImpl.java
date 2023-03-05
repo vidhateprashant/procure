@@ -1265,7 +1265,7 @@ public class QuotationServiceImpl implements QuotationService {
 								quotationItem.setItemId(prItem.getItemId());
 								quotationItem.setQuantity(prItem.getQuantity());
 								quotationItem.setCurrency(purchaseRequisition.getCurrency());
-								quotationItem.setReceivedDate(rfqRequest.getTransactionalDate());
+								quotationItem.setReceivedDate(prItem.getReceivedDate());
 								quotationItem.setPrNumber(purchaseRequisition.getPrNumber());
 								quotationItem.setPrId(prId);
 								quotationItem.setPrLocation(purchaseRequisition.getLocationId());
