@@ -91,7 +91,6 @@ public class GrnItem implements Cloneable {
 	@Column(precision=10, scale=2)
 	private Double unbilledQuantity;
 	
-	
 	@Column(name = "lot_number")
 	private String lotNumber;
 	

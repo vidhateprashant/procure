@@ -542,7 +542,14 @@ public class GrnServiceImpl implements GrnService {
 		}
 		// update the data in Item history table
 		this.updateGrnItemHistory(grnItemSaved, oldGrnItem);
-	return grnItem;
+		return grnItem;
+	}
+	
+	@Override
+	public boolean isGrnFullyProcessed(Long grnId) {
+		Long count = grnItemRepository.findUnprocessedItemsCountForGrn(grnId);
+		if (count > 0) return false;
+		return true;
 	}
 	
 }

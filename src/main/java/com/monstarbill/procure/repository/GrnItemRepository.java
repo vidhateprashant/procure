@@ -11,20 +11,10 @@ import com.monstarbill.procure.models.GrnItem;
 
 public interface GrnItemRepository extends JpaRepository<GrnItem, String> {
 
-//	@Query("select new com.monster.bill.models.GrnItem(gi.id, gi.grnId, gi.itemId, gi.grnNumber, "
-//			+ " gi.reciveQuantity, gi.remainQuantity, gi.lotNumber, gi.rate, gi.rtvQuantity, gi.invoiceNumber, "
-//			+ " i.name as itemName, i.description as itemDescription, i.uom as itemUom, poi.quantity as quantity, gi.taxGroupId) FROM GrnItem gi "
-//			+ " inner join Item i ON i.id = gi.itemId left join PurchaseOrderItem poi ON poi.poNumber = gi.poNumber where gi.grnId = :grnId ")
 	List<GrnItem> findByGrnId(Long grnId);
 
 	public Optional<GrnItem> findByIdAndIsDeleted(Long id, boolean isDeleted);
 
-//	@Query("select new com.monster.bill.models.GrnItem(gi.id, gi.grnId, gi.itemId, gi.grnNumber, "
-//			+ " gi.reciveQuantity, gi.remainQuantity, gi.lotNumber, gi.rate, gi.rtvQuantity, gi.invoiceNumber, "
-//			+ " i.name as itemName, i.description as description, i.uom as uom, poi.quantity as orderQuantity) FROM GrnItem gi "
-//			+ " inner join Item i ON i.id = gi.itemId left join PurchaseOrderItem poi ON poi.poNumber = gi.poNumber ")
-//	List<GrnItem> findItemsByGrnNumber(@Param("grnNumber") String grnNumber);
-	
 	public List<GrnItem> findByGrnIdAndIsDeleted(Long grnId, boolean isDeleted);
 	
 	@Query("select gi FROM GrnItem gi where gi.grnId = :grnId and gi.isDeleted = :isDeleted and gi.reciveQuantity > gi.rtvQuantity ")
@@ -41,6 +31,7 @@ public interface GrnItemRepository extends JpaRepository<GrnItem, String> {
 
 	List<GrnItem> findByGrnIdAndItemId(Long grnId, Long itemId);
 
-
+	@Query(" select count(1) from GrnItem WHERE unbilledQuantity > 0 AND grnId = :grnId and isDeleted = false ")
+	public Long findUnprocessedItemsCountForGrn(Long grnId);
 	
 }

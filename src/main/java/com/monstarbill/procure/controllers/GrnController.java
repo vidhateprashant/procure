@@ -251,4 +251,18 @@ public class GrnController {
 		log.info("GRN saved successfully");
 		return ResponseEntity.ok(grnItem);
 	}
+
+	/**
+	 * If unbilled quantiyt of all grn items is 0 then it is processed then return true
+	 * @param grnId
+	 * @return
+	 */
+	@GetMapping("/is-grn-fully-processed")
+	public ResponseEntity<Boolean> isGrnFullyProcessed(@RequestParam Long grnId) {
+		log.info("is-grn-fully-processed for ID :: " +  grnId);
+		Boolean isProcessed = grnService.isGrnFullyProcessed(grnId);
+		log.info("is-grn-fully-processed Finished");
+		return new ResponseEntity<>(isProcessed, HttpStatus.OK);
+	}
+	
 }

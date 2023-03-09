@@ -41,4 +41,6 @@ public interface GrnService {
 
 	public  GrnItem saveGrnItemObject( GrnItem grnItem);
 
+	public boolean isGrnFullyProcessed(Long grnId);
+
 }

@@ -23,9 +23,15 @@ public enum TransactionStatus {
 	RETURN("Returned"),
 	PARTIALLY_RETURN("Partially Returned"),
 	FULLY_RETURNED("Fully Returned"),
+	VOID("Voided"),
+	BILLED("Billed"),
+	PARTIALLY_PAID("Partially Paid"),
+	PAID("Paid"),
 	PARTIALLY_RECEIVED("Partially Recevied"),
 	RECEIVED("Received"),
-	VOID("Voided");
+	PARTIALLY_APPLIED("Partially applied"),
+	APPLIED("Applied"),
+	PARTIALLY_BILLED("Partially Billed");
 	
 	// constructor
     private TransactionStatus(final String transactionStatus) {

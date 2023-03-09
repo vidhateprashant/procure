@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +27,7 @@ import com.monstarbill.procure.enums.Operation;
 import com.monstarbill.procure.enums.TransactionStatus;
 import com.monstarbill.procure.feignclient.MasterServiceClient;
 import com.monstarbill.procure.feignclient.SetupServiceClient;
+import com.monstarbill.procure.models.Grn;
 import com.monstarbill.procure.models.GrnItem;
 import com.monstarbill.procure.models.Rtv;
 import com.monstarbill.procure.models.RtvHistory;
@@ -34,10 +37,10 @@ import com.monstarbill.procure.payload.request.PaginationRequest;
 import com.monstarbill.procure.payload.response.ApprovalPreference;
 import com.monstarbill.procure.payload.response.PaginationResponse;
 import com.monstarbill.procure.repository.GrnItemRepository;
-import com.monstarbill.procure.repository.GrnRepository;
 import com.monstarbill.procure.repository.RtvHistoryRepository;
 import com.monstarbill.procure.repository.RtvItemRepository;
 import com.monstarbill.procure.repository.RtvRepository;
+import com.monstarbill.procure.service.GrnService;
 import com.monstarbill.procure.service.RtvService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -58,21 +61,18 @@ public class RtvServiceImpl implements RtvService {
 
 	@Autowired
 	private RtvHistoryRepository rtvHistoryRepository;
-	
-	@Autowired
-	GrnRepository grnRepository;
 
 	@Autowired
 	private RtvDao rtvDao;
+	
+	@Autowired
+	private GrnService grnService;
 	
 	@Autowired
 	private SetupServiceClient setupServiceClient;
 
 	@Autowired
 	private MasterServiceClient masterServiceClient;
-	
-//	@Autowired
-//	private PurchaseOrderItemRepository purchaseOrderItemRepository;
 	
 	@Override
 	public Rtv save(Rtv rtv) {
@@ -115,11 +115,10 @@ public class RtvServiceImpl implements RtvService {
 			this.updateRtvHistory(oldRtv, savedRtv);
 			log.info("RTV History is saved successfully.");
 
-
 			// ----------------------------------- 01. rtv Item Started -------------------------------------------------
 			log.info("Save rtv Item Started...");
+			Set<Long> grnIds = new TreeSet<Long>();
 			List<RtvItem> rtvItems = rtv.getRtvItems();
-			//PurchaseOrderItem purchaseOrderItem = new PurchaseOrderItem();
 			List<GrnItem> grnItems = new ArrayList<GrnItem>();
 			if (CollectionUtils.isNotEmpty(rtvItems)) {
 				for (RtvItem rtvItem : rtvItems) {
@@ -133,14 +132,33 @@ public class RtvServiceImpl implements RtvService {
 						grnItem.setRtvQuantity(rtvItem.getAlreadyReturnQuantity() + rtvItem.getReturnQuantity());
 					}
 					this.grnItemRepository.saveAll(grnItems);
-//					purchaseOrderItem = this.purchaseOrderItemRepository.findById(rtvItem.getPoiId());
-//					if(purchaseOrderItem==null) {
-//						log.error("Purchase order item id is incorrect .");
-//						throw new CustomException("Purchase order item id is incorrect. ");
-//					}
-//					purchaseOrderItem.setRemainQuantity(purchaseOrderItem.getRemainQuantity() + rtvItem.getReturnQuantity());
-//					this.purchaseOrderItemRepository.save(purchaseOrderItem);
+					grnIds.add(rtvItem.getGrnId());
 				}
+				
+				log.info("Grn header level status update started.");
+				List<Grn> grns = new ArrayList<Grn>();
+				for (Long grnId : grnIds) {
+					Grn grn = this.grnService.getByGrnId(grnId);
+					Boolean isProcessed = this.grnService.isGrnFullyProcessed(grnId);
+					
+					String rtvStatus = TransactionStatus.RETURN.getTransactionStatus();
+					String billStatus = grn.getBillStatus();
+					if (isProcessed) {
+						if (TransactionStatus.PARTIALLY_BILLED.getTransactionStatus().equalsIgnoreCase(grn.getBillStatus())) {
+							rtvStatus = TransactionStatus.PARTIALLY_RETURN.getTransactionStatus();
+						}
+						if (TransactionStatus.BILLED.getTransactionStatus().equalsIgnoreCase(grn.getBillStatus())) {
+							rtvStatus = TransactionStatus.PARTIALLY_RETURN.getTransactionStatus();
+							billStatus = TransactionStatus.PARTIALLY_BILLED.getTransactionStatus();
+						}
+					}
+					grn.setStatus(rtvStatus);
+					grn.setBillStatus(billStatus);
+					grn.setRtvStatus(rtvStatus);
+					grns.add(grn);
+				}
+				this.grnService.save(grns);
+				log.info("Grn header level status update Finished.");
 			}
 			log.info("Save rtv Item Finished...");
 			// ----------------------------------- 01. rtv Item Finished -------------------------------------------------
