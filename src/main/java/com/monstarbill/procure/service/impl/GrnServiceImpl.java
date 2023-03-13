@@ -227,7 +227,7 @@ public class GrnServiceImpl implements GrnService {
 			Double oldQuantity = oldGrnItem.get().getReciveQuantity();
 			Double difference = newQuantity - oldQuantity;
 			remainedQuantity = purchaseOrderItem.getRemainQuantity() - difference;
-			
+
 //			if (remainedQuantity < 0) {
 //				throw new CustomException("Recieved quantity should be less than or equals to remained quantity.");
 //			}
@@ -239,7 +239,7 @@ public class GrnServiceImpl implements GrnService {
 		grnItem.setGrnId(grnId);
 		grnItem.setPoNumber(poNumber);
 		grnItem.setGrnNumber(grnNumber);
-		grnItem.setUnbilledQuantity(grnItem.getReciveQuantity());
+		grnItem.setRemainQuantity(remainedQuantity);
 		grnItem.setLastModifiedBy(CommonUtils.getLoggedInUsername());
 		
 		purchaseOrderItem.setRemainQuantity(remainedQuantity);

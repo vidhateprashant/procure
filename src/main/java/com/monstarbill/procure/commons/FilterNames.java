@@ -42,4 +42,6 @@ public class FilterNames {
 	public static final String START_DATE = "startDate";
 	public static final String END_DATE = "endDate";
 	public static final String CATEGORY = "category";
+	public static final String COUNTRY = "country";
+	public static final String RFQ_NUMBER = "rfqNumber";
 }

@@ -37,6 +37,7 @@ import com.monstarbill.procure.payload.request.PaginationRequest;
 import com.monstarbill.procure.payload.response.ApprovalPreference;
 import com.monstarbill.procure.payload.response.PaginationResponse;
 import com.monstarbill.procure.repository.GrnItemRepository;
+import com.monstarbill.procure.repository.GrnRepository;
 import com.monstarbill.procure.repository.RtvHistoryRepository;
 import com.monstarbill.procure.repository.RtvItemRepository;
 import com.monstarbill.procure.repository.RtvRepository;
@@ -67,6 +68,9 @@ public class RtvServiceImpl implements RtvService {
 	
 	@Autowired
 	private GrnService grnService;
+	
+	@Autowired
+	private GrnRepository grnRepository;
 	
 	@Autowired
 	private SetupServiceClient setupServiceClient;
@@ -130,6 +134,20 @@ public class RtvServiceImpl implements RtvService {
 					}
 					for (GrnItem grnItem : grnItems) {
 						grnItem.setRtvQuantity(rtvItem.getAlreadyReturnQuantity() + rtvItem.getReturnQuantity());
+						Double remainedQuantity = grnItem.getUnbilledQuantity() - grnItem.getRtvQuantity();
+						grnItem.setUnbilledQuantity(remainedQuantity);
+						
+						if (remainedQuantity < 0) {
+							throw new CustomException("Recieved quantity should be less than or equals to remained quantity.");
+						}
+						if (grnItem.getUnbilledQuantity() == 0) {
+							grnItem.setRtvStatus(TransactionStatus.RETURN.getTransactionStatus());
+							if (TransactionStatus.PARTIALLY_BILLED.getTransactionStatus().equalsIgnoreCase(grnItem.getBillStatus())) {
+								grnItem.setRtvStatus(TransactionStatus.PARTIALLY_RETURN.getTransactionStatus());	
+							}
+						} else {
+							grnItem.setRtvStatus(TransactionStatus.PARTIALLY_RETURN.getTransactionStatus());
+						}
 					}
 					this.grnItemRepository.saveAll(grnItems);
 					grnIds.add(rtvItem.getGrnId());
@@ -141,12 +159,10 @@ public class RtvServiceImpl implements RtvService {
 					Grn grn = this.grnService.getByGrnId(grnId);
 					Boolean isProcessed = this.grnService.isGrnFullyProcessed(grnId);
 					
-					String rtvStatus = TransactionStatus.RETURN.getTransactionStatus();
+					String rtvStatus = TransactionStatus.PARTIALLY_RETURN.getTransactionStatus();
 					String billStatus = grn.getBillStatus();
+					
 					if (isProcessed) {
-						if (TransactionStatus.PARTIALLY_BILLED.getTransactionStatus().equalsIgnoreCase(grn.getBillStatus())) {
-							rtvStatus = TransactionStatus.PARTIALLY_RETURN.getTransactionStatus();
-						}
 						if (TransactionStatus.BILLED.getTransactionStatus().equalsIgnoreCase(grn.getBillStatus())) {
 							rtvStatus = TransactionStatus.PARTIALLY_RETURN.getTransactionStatus();
 							billStatus = TransactionStatus.PARTIALLY_BILLED.getTransactionStatus();
@@ -157,7 +173,7 @@ public class RtvServiceImpl implements RtvService {
 					grn.setRtvStatus(rtvStatus);
 					grns.add(grn);
 				}
-				this.grnService.save(grns);
+				this.grnRepository.saveAll(grns);
 				log.info("Grn header level status update Finished.");
 			}
 			log.info("Save rtv Item Finished...");

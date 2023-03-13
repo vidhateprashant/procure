@@ -1007,6 +1007,8 @@ public class QuotationServiceImpl implements QuotationService {
 		String bidType = null;
 		String fromDate = null;
 		String toDate = null;
+		String country = null;
+		String rfqNumber = null;
 
 		if (filters.containsKey(FilterNames.SUBSIDIARY_NAME))
 			subsidiaryName = (String) filters.get(FilterNames.SUBSIDIARY_NAME);
@@ -1020,6 +1022,12 @@ public class QuotationServiceImpl implements QuotationService {
 		
 		if (filters.containsKey(FilterNames.TO_DATE))
 			toDate = (String) filters.get(FilterNames.TO_DATE);
+		
+		if (filters.containsKey(FilterNames.COUNTRY))
+			subsidiaryName = (String) filters.get(FilterNames.COUNTRY);
+		
+		if (filters.containsKey(FilterNames.RFQ_NUMBER))
+			subsidiaryName = (String) filters.get(FilterNames.RFQ_NUMBER);
 
 		StringBuilder whereClause = new StringBuilder(" AND q.isDeleted is false ");
 		if (StringUtils.isNotEmpty(subsidiaryName)) {
@@ -1033,6 +1041,12 @@ public class QuotationServiceImpl implements QuotationService {
 		}
 		if (toDate != null) {
 			whereClause.append(" AND q.bidCloseDate <= '").append(toDate).append("' ");
+		}
+		if (StringUtils.isNotEmpty(country)) {
+			whereClause.append(" AND lower(s.country) like lower ('%").append(country).append("%')");
+		}
+		if (StringUtils.isNotEmpty(rfqNumber)) {
+			whereClause.append(" AND lower(q.rfqNumber) like lower ('%").append(rfqNumber).append("%')");
 		}
 		
 		return whereClause.toString();
