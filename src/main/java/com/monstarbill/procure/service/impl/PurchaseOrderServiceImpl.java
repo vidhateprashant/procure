@@ -1133,14 +1133,15 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 	}
 
 	@Override
-	public PurchaseOrderItem getByPoItemId(Long poId, Long itemId) {
+	public List<PurchaseOrderItem> getByPoItemId(Long poId, Long itemId) {
 
-		PurchaseOrderItem purchaseOrderItem = purchaseOrderItemRepository.findByPoIdAndItemIdAndIsDeleted(poId, itemId, false);
-		Item item = this.masterServiceClient.findByItemId(purchaseOrderItem.getItemId());
-		purchaseOrderItem.setItemDescription(item.getDescription());
-		purchaseOrderItem.setItemUom(item.getUom());
-		
-		return purchaseOrderItem;
+		List<PurchaseOrderItem> purchaseOrderItems = purchaseOrderItemRepository.findByPoIdAndItemIdAndIsDeleted(poId, itemId, false);
+		for (PurchaseOrderItem purchaseOrderItem : purchaseOrderItems) {
+			Item item = this.masterServiceClient.findByItemId(purchaseOrderItem.getItemId());
+			purchaseOrderItem.setItemDescription(item.getDescription());
+			purchaseOrderItem.setItemUom(item.getUom());
+		}
+		return purchaseOrderItems;
 	}
 
 	@Override

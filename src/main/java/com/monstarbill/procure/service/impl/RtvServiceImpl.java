@@ -134,12 +134,12 @@ public class RtvServiceImpl implements RtvService {
 					}
 					for (GrnItem grnItem : grnItems) {
 						grnItem.setRtvQuantity(rtvItem.getAlreadyReturnQuantity() + rtvItem.getReturnQuantity());
-						Double remainedQuantity = grnItem.getUnbilledQuantity() - grnItem.getRtvQuantity();
-						grnItem.setUnbilledQuantity(remainedQuantity);
-						
-						if (remainedQuantity < 0) {
-							throw new CustomException("Recieved quantity should be less than or equals to remained quantity.");
-						}
+//						Double remainedQuantity = grnItem.getUnbilledQuantity() - grnItem.getRtvQuantity();
+//						grnItem.setUnbilledQuantity(remainedQuantity);
+//						
+//						if (remainedQuantity < 0) {
+//							throw new CustomException("Recieved quantity should be less than or equals to remained quantity.");
+//						}
 						if (grnItem.getUnbilledQuantity() == 0) {
 							grnItem.setRtvStatus(TransactionStatus.RETURN.getTransactionStatus());
 							if (TransactionStatus.PARTIALLY_BILLED.getTransactionStatus().equalsIgnoreCase(grnItem.getBillStatus())) {

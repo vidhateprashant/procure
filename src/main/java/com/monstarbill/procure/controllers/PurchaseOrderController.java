@@ -306,7 +306,7 @@ public class PurchaseOrderController {
     }
 	
 	@GetMapping("/getByPoItemId")
-    public PurchaseOrderItem getByPoItemId(@RequestParam Long poId, @RequestParam Long itemId) {
+    public List<PurchaseOrderItem> getByPoItemId(@RequestParam Long poId, @RequestParam Long itemId) {
         return purchaseOrderService.getByPoItemId(poId, itemId);
     }
 	/**

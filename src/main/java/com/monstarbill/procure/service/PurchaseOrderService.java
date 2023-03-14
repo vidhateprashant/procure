@@ -42,7 +42,7 @@ public interface PurchaseOrderService {
 	
 	public PurchaseOrder getByPoId(Long poId);
 	
-	public PurchaseOrderItem getByPoItemId(Long poId, Long itemId);
+	public List<PurchaseOrderItem> getByPoItemId(Long poId, Long itemId);
 	
 	public List<PurchaseOrder> getBySupplierSubsidiary(Long supplierId, Long subsidiaryId);
 
