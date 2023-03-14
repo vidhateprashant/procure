@@ -323,9 +323,14 @@ public class RtvServiceImpl implements RtvService {
 
 		if (rtv.isPresent()) {
 			// 1. Get rtvItem
-			List<RtvItem> rtvItem = this.rtvItemRepository.findByRtvIdAndIsDeleted(id, false);
-			if (CollectionUtils.isNotEmpty(rtvItem)) {
-				rtv.get().setRtvItems(rtvItem);
+			List<RtvItem> rtvItems = this.rtvItemRepository.findByRtvIdAndIsDeleted(id, false);
+			if (CollectionUtils.isNotEmpty(rtvItems)) {
+				for (RtvItem rtvItem : rtvItems) {
+					GrnItem grnItem = this.grnItemRepository.findByGrnIdAndItemIdAndIsDeleted(rtvItem.getGrnId(), rtvItem.getItemId(), false);
+					rtvItem.setAlreadyReturnQuantity(grnItem.getRtvQuantity());
+				}
+				
+				rtv.get().setRtvItems(rtvItems);
 			}
 			boolean isRoutingActive = this.findIsApprovalRoutingActive(rtv.get().getSubsidiaryId());
 			if (isRoutingActive) {
