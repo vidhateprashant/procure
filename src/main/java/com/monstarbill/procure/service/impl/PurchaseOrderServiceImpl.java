@@ -1929,4 +1929,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 		log.info("Get all purchase order items by po number ." + itemyByPo);
 		return itemyByPo;
 	}
+	
+	@Override
+	public boolean isPoFullyProcessed(Long poId) {
+		Long count = purchaseOrderItemRepository.findUnprocessedItemsCountForPo(poId);
+		if (count > 0) return false;
+		return true;
+	}
+	
+	@Override
+	public PurchaseOrder savePo(PurchaseOrder purchaseOrder) {
+		return this.purchaseOrderRepository.save(purchaseOrder);
+	}
 }

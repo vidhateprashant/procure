@@ -408,4 +408,26 @@ public class PurchaseOrderController {
     public Optional<PurchaseOrder> findByPoNumber(@RequestParam String poNumber) {
         return purchaseOrderService.findByPoNumber(poNumber);
     }
+	
+	@GetMapping("/is-po-fully-processed")
+	public ResponseEntity<Boolean> isPoFullyProcessed(@RequestParam Long poId) {
+		log.info("is-PO-fully-processed for ID :: " +  poId);
+		Boolean isProcessed = purchaseOrderService.isPoFullyProcessed(poId);
+		log.info("is-PO-fully-processed Finished");
+		return new ResponseEntity<>(isProcessed, HttpStatus.OK);
+	}
+
+	@PostMapping("/save-po")
+	public ResponseEntity<PurchaseOrder> savePo(@RequestBody PurchaseOrder purchaseOrder) {
+		log.info("Saving the Purchase Order :: " + purchaseOrder.toString());
+		try {
+			purchaseOrder = purchaseOrderService.savePo(purchaseOrder);
+		} catch (Exception e) {
+			log.error("Error while saving the PO :: ");
+			e.printStackTrace();
+			throw new CustomException("Error while saving the PO " + e.toString());
+		}
+		log.info("Purchase Order saved successfully");
+		return ResponseEntity.ok(purchaseOrder);
+	}
 }

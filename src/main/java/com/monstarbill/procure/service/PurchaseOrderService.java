@@ -66,4 +66,8 @@ public interface PurchaseOrderService {
 	
 	public List<PurchaseOrderItem> findByPoIdForItem(Long poId);
 
+	public boolean isPoFullyProcessed(Long poId);
+
+	public PurchaseOrder savePo(PurchaseOrder purchaseOrder);
+
 }

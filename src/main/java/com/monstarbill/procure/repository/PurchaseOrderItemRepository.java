@@ -83,4 +83,7 @@ public interface PurchaseOrderItemRepository extends JpaRepository<PurchaseOrder
 	@Query("select new com.monstarbill.procure.models.PurchaseOrderItem(poi.id, poi.poNumber, poi.taxGroupId, poi.poId, poi.itemId,poi.remainQuantity, poi.quantity, poi.rate, i.name as itemName, poi.itemDescription as itemDescription, i.uom as itemUom) "
 			+ " from PurchaseOrderItem poi inner join Item i ON i.id = poi.itemId WHERE poi.poId = :poId AND (poi.remainQuantity is null or poi.remainQuantity != 0.0) AND poi.isDeleted = :isDeleted")
 	public List<PurchaseOrderItem> getAllItemByPoAndIsDeleted(@Param("poId") Long poId, @Param("isDeleted") boolean isDeleted);
+	
+	@Query(" select count(1) from PurchaseOrderItem WHERE unbilledQuantity > 0 AND poId = :poId and isDeleted = false ")
+	public Long findUnprocessedItemsCountForPo(Long poId);
 }
